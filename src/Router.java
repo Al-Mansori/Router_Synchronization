@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-// import java.util.concurrent.Semaphore;
+
 
 class Router {
     private int size;
@@ -15,8 +15,10 @@ class Router {
 
     public void connect(Device device) throws InterruptedException {
         devices.acquire();
-        connections.add(device);
         currentConnection = (currentConnection % size) + 1;
+        connections.add(device);
+        
+        
     }
 
     public void disconnect(Device device) {
@@ -28,7 +30,7 @@ class Router {
         return connections.size();
     }
 
-    public int getConnectionNum() {
+    public synchronized int getConnectionNum() {
         return currentConnection;
     }
 
