@@ -5,8 +5,7 @@ class Router {
     private int size;
     private Semaphore devices;
     private ArrayList<Device> connections;
-    private int inptr = 1;
-    private int outptr = 1;
+    private int currentConnection = 1;
 
     public Router(int maxConnections) {
         size = maxConnections;
@@ -15,27 +14,25 @@ class Router {
     }
 
     public void connect(Device device) throws InterruptedException {
-        if(connections.size() >= size) {
-            System.err.println(device.getName() + " (" + device.getType() + ") " + "arrived and waiting");
-        } else {
-            System.err.println(device.getName() + " (" + device.getType() + ") " + "arrived");
-        }
-        connections.add(device);
-        inptr = (inptr + 1) % size;
         devices.acquire();
-        System.out.println("Connection " + inptr + ": " + device.getName() + ": " + device.getType() + " Occupied");
+        connections.add(device);
+        currentConnection = (currentConnection % size) + 1;
     }
 
     public void disconnect(Device device) {
-  
-        devices.release();
         connections.remove(device);
-        
-        outptr = (outptr + 1) % size;
-        System.out.println("Connection " + outptr + ": " + device.getName() + ": " + device.getType() + " Logged out");
+        devices.release();
     }
 
-    public int devicesNum() {
+    public synchronized int devicesNum() {
         return connections.size();
+    }
+
+    public int getConnectionNum() {
+        return currentConnection;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

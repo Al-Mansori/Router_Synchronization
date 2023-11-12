@@ -18,11 +18,19 @@ class Device extends Thread {
 
     public void run() {
         try {
+            synchronized (router) {
+                if (router.devicesNum() >= router.getSize()) {
+                    System.err.println(getName() + " (" + getType() + ") " + "arrived and waiting");
+                } else {
+                    System.err.println(getName() + " (" + getType() + ") " + "arrived");
+                }
+            }
             router.connect(this);
-            System.out.println("Connection " + getName() + ": " + getType() + " login");
-            System.out.println("Connection " + getName() + ": " + getType() + " Performs Online activity");
-            Thread.sleep((long) (Math.random() * 5000));
-            System.err.println("Num : " + router.devicesNum());
+            System.out.println("Connection " + router.getConnectionNum() + ": " + getName() + " Occupied");
+            System.out.println("Connection " + router.getConnectionNum() + ": " + getName() + " login");
+            System.out.println("Connection " + router.getConnectionNum() + ": " + getName() + " Performs Online activity");
+            sleep((long) (Math.random() * 5000));
+            System.out.println("Connection " + router.getConnectionNum() + ": " + getName() + " Logged out");
             router.disconnect(this);
 
         } catch(InterruptedException e) {
