@@ -41,7 +41,7 @@ class Device extends Thread {
             System.out.println("Connection " + connection + ": " + getName() + " Occupied");
             System.out.println("Connection " + connection + ": " + getName() + " login");
             System.out.println("Connection " + connection + ": " + getName() + " Performs Online activity");
-            Thread.sleep((long) (Math.random() * 5000 * Math.random()));
+            Thread.sleep((long) (Math.random() * 5000));
             System.out.println("Connection " + connection + ": " + getName() + " Logged out");
             router.disconnect(this);
     
