@@ -1,6 +1,7 @@
 class Device extends Thread {
     private String type;
     private Router router;
+    private int connection;
 
     public Device() {
 
@@ -16,24 +17,34 @@ class Device extends Thread {
         return type;
     }
 
+    public void setConnection(int _connection) {
+        this.connection = _connection;
+        
+    }
+
+    public int getConnection() {
+        return connection;
+    }
+    
     public void run() {
         try {
-            int connectionNum;
             synchronized (router) {
-                if (router.devicesNum() >= router.getSize()) {
-                    System.err.println(getName() + " (" + getType() + ") " + "arrived and waiting");
-                } else {
+                if (router.hasPermits()) {
                     System.err.println(getName() + " (" + getType() + ") " + "arrived");
-                }
-                connectionNum = router.getConnectionNum();
+                } else {
+                    System.err.println(getName() + " (" + getType() + ") " + "arrived and waiting");
+                }       
             }
+
+            setConnection(router.getCurrentConnection());
             router.connect(this);
-            System.out.println("Connection " + connectionNum + ": " + getName() + " Occupied");
-            System.out.println("Connection " + connectionNum + ": " + getName() + " login");
-            System.out.println("Connection " + connectionNum + ": " + getName() + " Performs Online activity");
-            sleep((long) (Math.random() * 5000));
-            System.out.println("Connection " + connectionNum + ": " + getName() + " Logged out");
+            System.out.println("Connection " + connection + ": " + getName() + " Occupied");
+            System.out.println("Connection " + connection + ": " + getName() + " login");
+            System.out.println("Connection " + connection + ": " + getName() + " Performs Online activity");
+            Thread.sleep((long) (Math.random() * 5000 * Math.random()));
+            System.out.println("Connection " + connection + ": " + getName() + " Logged out");
             router.disconnect(this);
+    
 
         } catch(InterruptedException e) {
             e.printStackTrace();

@@ -10,31 +10,29 @@ class Router {
     public Router(int maxConnections) {
         size = maxConnections;
         devices = new Semaphore(size);
-        connections = new ArrayList<>();
+        connections = new ArrayList<>(size);
     }
 
     public void connect(Device device) throws InterruptedException {
-        devices.acquire();
-        currentConnection = (currentConnection % size) + 1;
+        devices.acquire();   
         connections.add(device);
-        
+        device.setConnection(currentConnection);
+        currentConnection = (currentConnection  % size) + 1;
         
     }
 
     public void disconnect(Device device) {
         connections.remove(device);
         devices.release();
+        currentConnection = device.getConnection();
     }
 
-    public synchronized int devicesNum() {
-        return connections.size();
+    public synchronized boolean hasPermits() {
+        return devices.hasPermits();
     }
 
-    public synchronized int getConnectionNum() {
+    public int getCurrentConnection() {
         return currentConnection;
-    }
-
-    public int getSize() {
-        return size;
+        
     }
 }

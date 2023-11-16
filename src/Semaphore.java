@@ -6,7 +6,7 @@ class Semaphore {
     }
 
     public synchronized void acquire() throws InterruptedException {
-        if (permits == 0) {
+        while (permits == 0) {
             wait();
         }
         permits--;
@@ -19,7 +19,7 @@ class Semaphore {
         }
     }
 
-    public synchronized boolean hasPermits() {
+    public boolean hasPermits() {
         return permits > 0;
     }
 }
