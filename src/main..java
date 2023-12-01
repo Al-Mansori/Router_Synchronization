@@ -140,22 +140,20 @@ class Network {
         Router router = new Router(maxConnections);
 
         ArrayList<Device> devices = new ArrayList<>();
-
-        for (int i = 0; i < totalDevices; i++) {
-            System.out.println("Enter device name and type (e.g., C1 mobile): ");
-            String name = scanner.next();
-            String type = scanner.next();
-
-            devices.add(new Device(name, type, router));
-
-        }
-
         //output to file
         try
         {
+            System.out.println("Enter each device name and type (e.g., C1 mobile): ");
             FileOutputStream fos = new FileOutputStream("output.txt");
             PrintStream ps = new PrintStream(fos);
             System.setOut(ps);
+            for (int i = 0; i < totalDevices; i++) {
+                String name = scanner.next();
+                String type = scanner.next();
+
+                devices.add(new Device(name, type, router));
+
+            }
 
             for (Device device : devices) {
                 device.start();
