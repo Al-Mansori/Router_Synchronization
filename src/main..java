@@ -1,5 +1,11 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.PrintStream;
+import java.io.PrintStream;
+
+
 
 class Semaphore {
     private int permits;
@@ -59,9 +65,9 @@ class Device extends Thread {
         try {
             synchronized (router) {
                 if (router.hasPermits()) {
-                    System.err.println(getName() + " (" + getType() + ") " + "arrived");
+                    System.out.println(getName() + " (" + getType() + ") " + "arrived");
                 } else {
-                    System.err.println(getName() + " (" + getType() + ") " + "arrived and waiting");
+                    System.out.println(getName() + " (" + getType() + ") " + "arrived and waiting");
                 }       
             }
 
@@ -144,8 +150,34 @@ class Network {
 
         }
 
-        for (Device device : devices) {
-            device.start();
+        //output to file
+        try
+        {
+            FileOutputStream fos = new FileOutputStream("output.txt");
+            PrintStream ps = new PrintStream(fos);
+            System.setOut(ps);
+
+            for (Device device : devices) {
+                device.start();
+            }
+            for(Device device : devices)
+            {
+                try{
+                    device.join();
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+            }
+
+            ps.close();
+            fos.close();
+
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
+
     }
 }
